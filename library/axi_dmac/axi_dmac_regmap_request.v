@@ -78,8 +78,8 @@ module axi_dmac_regmap_request #(
   output [DMA_LENGTH_WIDTH-1:0] request_y_length,
   output [DMA_LENGTH_WIDTH-1:0] request_dest_stride,
   output [DMA_LENGTH_WIDTH-1:0] request_src_stride,
-  output [MAX_NUM_FRAMES_WIDTH-1:0] request_flock_framenum,
-  output [MAX_NUM_FRAMES_WIDTH-1:0] request_flock_distance,
+  output [MAX_NUM_FRAMES_WIDTH:0] request_flock_framenum,
+  output [MAX_NUM_FRAMES_WIDTH:0] request_flock_distance,
   output [DMA_AXI_ADDR_WIDTH-1:0] request_flock_stride,
   output request_flock_en,
   output request_sync_transfer_start,
@@ -187,8 +187,8 @@ always @(*) begin
   9'h112: up_rdata <= up_measured_transfer_length;
   9'h113: up_rdata <= up_tlf_data[MEASURED_LENGTH_WIDTH-1 : 0];   // Length
   9'h114: up_rdata <= up_tlf_data[MEASURED_LENGTH_WIDTH+: 2];  // ID
-  9'h115: up_rdata <= {{(16-MAX_NUM_FRAMES_WIDTH){'b0}},request_flock_distance,
-                       {(16-MAX_NUM_FRAMES_WIDTH){'b0}},request_flock_framenum};
+  9'h115: up_rdata <= {{(16-MAX_NUM_FRAMES_WIDTH+1){'b0}},request_flock_distance,
+                       {(16-MAX_NUM_FRAMES_WIDTH+1){'b0}},request_flock_framenum};
   9'h116: up_rdata <= request_flock_stride;
   default: up_rdata <= 32'h00;
   endcase
@@ -224,8 +224,8 @@ end
 
 if (ENABLE_FRAME_LOCK == 1) begin
 
-  reg [MAX_NUM_FRAMES_WIDTH-1:0] up_dma_flock_framenum = 'h0;
-  reg [MAX_NUM_FRAMES_WIDTH-1:0] up_dma_flock_distance = 'h0;
+  reg [MAX_NUM_FRAMES_WIDTH:0] up_dma_flock_framenum = 'h0;
+  reg [MAX_NUM_FRAMES_WIDTH:0] up_dma_flock_distance = 'h0;
   reg [DMA_AXI_ADDR_WIDTH-1:0] up_dma_flock_stride = 'h0;
 
   always @(posedge clk) begin
@@ -236,8 +236,8 @@ if (ENABLE_FRAME_LOCK == 1) begin
     end else if (up_wreq == 1'b1) begin
       case (up_waddr)
         9'h115: begin
-          up_dma_flock_framenum <= up_wdata[MAX_NUM_FRAMES_WIDTH-1:0];
-          up_dma_flock_distance <= up_wdata[16 +: (MAX_NUM_FRAMES_WIDTH-1)];
+          up_dma_flock_framenum <= up_wdata[MAX_NUM_FRAMES_WIDTH:0];
+          up_dma_flock_distance <= up_wdata[16 +: (MAX_NUM_FRAMES_WIDTH+1)];
         end
         9'h116: up_dma_flock_stride <= up_wdata[DMA_AXI_ADDR_WIDTH-1:0];
       endcase

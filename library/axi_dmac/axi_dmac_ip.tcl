@@ -203,7 +203,7 @@ adi_set_bus_dependency "m_framelock" "m_framelock" \
   "(spirit:decode(id('MODELPARAM_VALUE.DMA_TYPE_SRC')) != 0 and \
     spirit:decode(id('MODELPARAM_VALUE.DMA_TYPE_DEST')) = 0 and \
     spirit:decode(id('MODELPARAM_VALUE.ENABLE_FRAME_LOCK')) = 1)"
-adi_add_bus_clock "s_axis_aclk" "m_framelock"
+#adi_add_bus_clock "s_axis_aclk" "m_framelock"
 
 adi_add_bus "s_framelock" "slave" \
   "analog.com:interface:if_framelock_rtl:1.0" \
@@ -216,7 +216,7 @@ adi_set_bus_dependency "s_framelock" "s_framelock" \
   "(spirit:decode(id('MODELPARAM_VALUE.DMA_TYPE_SRC')) = 0 and \
     spirit:decode(id('MODELPARAM_VALUE.DMA_TYPE_DEST')) != 0 and \
     spirit:decode(id('MODELPARAM_VALUE.ENABLE_FRAME_LOCK')) = 1)"
-adi_add_bus_clock "s_axis_aclk" "s_framelock"
+#adi_add_bus_clock "s_axis_aclk" "s_framelock"
 
 set cc [ipx::current_core]
 

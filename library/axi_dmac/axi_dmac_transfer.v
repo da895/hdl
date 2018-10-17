@@ -75,7 +75,8 @@ module axi_dmac_transfer #(
   input [DMA_LENGTH_WIDTH-1:0] req_y_length,
   input [DMA_LENGTH_WIDTH-1:0] req_dest_stride,
   input [DMA_LENGTH_WIDTH-1:0] req_src_stride,
-  input [MAX_NUM_FRAMES_WIDTH-1:0] req_flock_framenum,
+  input [MAX_NUM_FRAMES_WIDTH:0] req_flock_framenum,
+  input [MAX_NUM_FRAMES_WIDTH:0] req_flock_distance,
   input [DMA_AXI_ADDR_WIDTH-1:0] req_flock_stride,
   input req_flock_en,
   input req_sync_transfer_start,
@@ -178,11 +179,11 @@ module axi_dmac_transfer #(
 
   // Frame lock interface
   // Master mode
-  input  [MAX_NUM_FRAMES_WIDTH-1:0] m_frame_in,
-  output [MAX_NUM_FRAMES_WIDTH-1:0] m_frame_out,
+  input  [MAX_NUM_FRAMES_WIDTH:0] m_frame_in,
+  output [MAX_NUM_FRAMES_WIDTH:0] m_frame_out,
   // Slave mode
-  input  [MAX_NUM_FRAMES_WIDTH-1:0] s_frame_in,
-  output [MAX_NUM_FRAMES_WIDTH-1:0] s_frame_out,
+  input  [MAX_NUM_FRAMES_WIDTH:0] s_frame_in,
+  output [MAX_NUM_FRAMES_WIDTH:0] s_frame_out,
 
   // Diagnostics interface
   output [7:0] dest_diag_level_bursts
@@ -301,6 +302,7 @@ axi_dmac_framelock #(
   .req_dest_stride (req_dest_stride),
   .req_src_stride (req_src_stride),
   .req_flock_framenum(req_flock_framenum),
+  .req_flock_distance(req_flock_distance),
   .req_flock_stride(req_flock_stride),
   .req_flock_en(req_flock_en),
   .req_sync_transfer_start (req_sync_transfer_start),
